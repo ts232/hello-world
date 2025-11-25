@@ -26,22 +26,115 @@
     </style>
 </head>
 <body>
-    <pre>
-#   #  ####  #      #       ###
-#   #  #     #      #      #   #
-#   #  #     #      #      #   #
-#####  ###   #      #      #   #
-#   #  #     #      #      #   #
-#   #  #     #      #      #   #
-#   #  ####  ####   ####    ###
+    <pre id="ascii"></pre>
+    <script>
+        // Each letter is 7 rows tall, defined as binary patterns
+        // 1 = filled, 0 = empty, each letter has consistent width
+        const font = {
+            'H': [
+                "##    ##",
+                "##    ##",
+                "##    ##",
+                "########",
+                "##    ##",
+                "##    ##",
+                "##    ##"
+            ],
+            'E': [
+                "######",
+                "##    ",
+                "##    ",
+                "##### ",
+                "##    ",
+                "##    ",
+                "######"
+            ],
+            'L': [
+                "##    ",
+                "##    ",
+                "##    ",
+                "##    ",
+                "##    ",
+                "##    ",
+                "######"
+            ],
+            'O': [
+                " #### ",
+                "##  ##",
+                "##  ##",
+                "##  ##",
+                "##  ##",
+                "##  ##",
+                " #### "
+            ],
+            'W': [
+                "##      ##",
+                "##      ##",
+                "##      ##",
+                "##  ##  ##",
+                "##  ##  ##",
+                "##  ##  ##",
+                " ###  ### "
+            ],
+            'R': [
+                "##### ",
+                "##  ##",
+                "##  ##",
+                "##### ",
+                "##  ##",
+                "##  ##",
+                "##  ##"
+            ],
+            'D': [
+                "##### ",
+                "##  ##",
+                "##  ##",
+                "##  ##",
+                "##  ##",
+                "##  ##",
+                "##### "
+            ],
+            '!': [
+                "##",
+                "##",
+                "##",
+                "##",
+                "##",
+                "  ",
+                "##"
+            ],
+            ' ': [
+                "    ",
+                "    ",
+                "    ",
+                "    ",
+                "    ",
+                "    ",
+                "    "
+            ]
+        };
 
-#       #   ###   ####   #      ####    #
-#       #  #   #  #   #  #      #   #   #
-#   #   #  #   #  #   #  #      #   #   #
-#  # #  #  #   #  ####   #      #   #   #
-#  # #  #  #   #  #  #   #      #   #
-# #   # #  #   #  #   #  #      #   #   #
-##     ##   ###   #   #  ####   ####    #
-    </pre>
+        function renderText(text) {
+            const lines = ['', '', '', '', '', '', ''];
+            const spacing = "  "; // 2 spaces between letters
+
+            for (let i = 0; i < text.length; i++) {
+                const char = text[i].toUpperCase();
+                const glyph = font[char] || font[' '];
+
+                for (let row = 0; row < 7; row++) {
+                    if (i > 0) lines[row] += spacing;
+                    lines[row] += glyph[row];
+                }
+            }
+
+            return lines.join('\n');
+        }
+
+        const hello = renderText("HELLO");
+        const world = renderText("WORLD!");
+
+        document.getElementById('ascii').textContent = hello + "\n\n" + world;
+    </script>
 </body>
 </html>
