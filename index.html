@@ -7,29 +7,38 @@
     <style>
         body {
             background-color: #1a1a2e;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
             margin: 0;
-            padding: 20px;
-            box-sizing: border-box;
+            padding: 0;
+            overflow: hidden;
+            height: 100vh;
+            width: 100vw;
         }
-        pre {
+        #ascii {
             color: #ff8800;
             font-family: 'Courier New', Courier, monospace;
-            font-size: clamp(4px, 1.2vw, 14px);
+            font-size: clamp(6px, 1.5vw, 16px);
             line-height: 1.1;
-            text-align: center;
             white-space: pre;
+            position: absolute;
+            transition: transform 0.5s ease-in-out;
+        }
+        #sun {
+            color: #ffdd00;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: clamp(4px, 1vw, 12px);
+            line-height: 1.0;
+            white-space: pre;
+            position: absolute;
+            top: 20px;
+            right: 20px;
         }
     </style>
 </head>
 <body>
+    <pre id="sun"></pre>
     <pre id="ascii"></pre>
     <script>
-        // Each letter is 7 rows tall, defined as binary patterns
-        // 1 = filled, 0 = empty, each letter has consistent width
+        // Each letter is 7 rows tall, defined with consistent width
         const font = {
             'H': [
                 "##    ##",
@@ -116,7 +125,7 @@
 
         function renderText(text) {
             const lines = ['', '', '', '', '', '', ''];
-            const spacing = "  "; // 2 spaces between letters
+            const spacing = "  ";
 
             for (let i = 0; i < text.length; i++) {
                 const char = text[i].toUpperCase();
@@ -131,10 +140,61 @@
             return lines.join('\n');
         }
 
+        // Render the text
         const hello = renderText("HELLO");
         const world = renderText("WORLD!");
+        const asciiEl = document.getElementById('ascii');
+        asciiEl.textContent = hello + "\n\n" + world;
 
-        document.getElementById('ascii').textContent = hello + "\n\n" + world;
+        // ASCII Sun
+        const sun = `    \\  |  /
+      \\ | /
+   --- O ---
+      / | \\
+    /  |  \\`;
+        document.getElementById('sun').textContent = sun;
+
+        // Animation variables
+        let posX = 100;
+        let posY = 100;
+        let velX = 2;
+        let velY = 1.5;
+
+        function animate() {
+            const maxX = window.innerWidth - asciiEl.offsetWidth - 20;
+            const maxY = window.innerHeight - asciiEl.offsetHeight - 20;
+
+            // Update position
+            posX += velX;
+            posY += velY;
+
+            // Bounce off edges
+            if (posX <= 0 || posX >= maxX) {
+                velX *= -1;
+                posX = Math.max(0, Math.min(posX, maxX));
+            }
+            if (posY <= 0 || posY >= maxY) {
+                velY *= -1;
+                posY = Math.max(0, Math.min(posY, maxY));
+            }
+
+            // Add some randomness to velocity occasionally
+            if (Math.random() < 0.02) {
+                velX += (Math.random() - 0.5) * 0.5;
+                velY += (Math.random() - 0.5) * 0.5;
+                // Clamp velocity
+                velX = Math.max(-4, Math.min(4, velX));
+                velY = Math.max(-4, Math.min(4, velY));
+            }
+
+            asciiEl.style.left = posX + 'px';
+            asciiEl.style.top = posY + 'px';
+
+            requestAnimationFrame(animate);
+        }
+
+        // Start animation
+        animate();
     </script>
 </body>
 </html>
